@@ -10,11 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Todo {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  title String
-  description String?
-  completed Boolean @default(false)
+model User {
+  username      String    @id
+  email         String    @unique
+  displayName   String    
+  picture       String
+  description   String
+  role          String    @default("user") 
+  podcast       Podcast[]
+  review        Review[]
+}
+
+model Podcast {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [podcaster], references: [username])
+  podcaster     String    
+  title         String
+  audio         String
+  picture       String
+  date          DateTime  @default(now())
+  review        Review[]
+}
+
+model Review {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [podcaster], references: [username])
+  podcast       Podcast   @relation(fields: [idPodcast], references: [id])
+  podcaster     String    
+  idPodcast     Int
+  reviewer      String
+  review        String
+  date          DateTime  @default(now())
+  rating        Int
 }
