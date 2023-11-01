@@ -16,8 +16,11 @@ COPY tsconfig.json ./
 # COPY
 COPY . .
 
+COPY .env ./
+
 RUN npm install
 RUN npx prisma generate
+# RUN npx prisma migrate
 
 # Run and expose the server on port 3000
 EXPOSE 3000
