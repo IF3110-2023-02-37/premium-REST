@@ -1,6 +1,6 @@
 import express, { Application, Request, Response } from 'express';
-import register  from './src/handler/auth';
-import prisma from './src/prismaClient'
+import register  from './handler/auth';
+import prisma from './prismaClient'
 
 const app: Application = express();
 
@@ -16,11 +16,11 @@ app.use('/', route)
 
 // launch the service on port 3000
 app.listen(port, () => {
-  console.log(`Server is running! on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 })
 
 // app.get("/", (_req, res: Response) => {
 //   res.send(`Server is running on port: ${port}`);
 // });
 
-// app.post('/register', register);
+// app.post('/register', register)

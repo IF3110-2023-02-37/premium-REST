@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const reviewController = require('../controllers/reviewController')
+const reviewControl = require('../controllers/reviewControl')
 import { Request, Response } from 'express';
 
 // routing test to review
-router.get('/test', async ( req:Request, res:Response) => {
-    await reviewController.tes(req,res);
+router.get('/', async ( req:Request, res:Response) => {
+    await reviewControl.tes(req,res);
 })
 
 module.exports = router
