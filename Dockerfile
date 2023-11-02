@@ -4,6 +4,8 @@ WORKDIR /app
 # COPY package.json and package-lock.json files
 COPY package*.json ./
 
+COPY nodemon.json ./
+
 # generated prisma files
 COPY prisma ./prisma/
 
@@ -19,6 +21,7 @@ COPY . .
 COPY .env ./
 
 RUN npm install
+RUN npm install -g nodemon
 RUN npx prisma generate
 # RUN npx prisma migrate
 
