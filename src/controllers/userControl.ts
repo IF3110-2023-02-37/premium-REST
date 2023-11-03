@@ -63,12 +63,14 @@ const login =async (req: Request, res: Response) => {
 
     const token = jwt.sign(payload, secret, {expiresIn: expiresIn})
     return res.json({
-      data: {user},
+      user,
       token: token
     })
   } else {
     return res.status(403).json({ message: "Wrong password, try again" })
   }
 }
+
+
 
 export {register, login};
