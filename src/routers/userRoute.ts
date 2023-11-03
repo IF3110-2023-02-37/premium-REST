@@ -1,11 +1,10 @@
-const express = require('express')
-const router = express.Router()
-const userControl = require('../controllers/userControl')
 import { Request, Response } from 'express';
+import { register } from '../controllers/userController'; // Import the register function
 
-// routing test to user
-router.get('/', async ( req:Request, res:Response) => {
-    await userControl.tes(req,res);
-})
+const express = require('express');
+const router = express.Router();
 
-module.exports = router
+// routing test to review
+router.post('/register', register);
+
+module.exports = router;

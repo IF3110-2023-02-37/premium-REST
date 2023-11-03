@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import prisma from "../../prismaClient";
+import prisma from "../prismaClient";
 import bcrypt from "bcrypt";
 
-const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
   let { username, email, password, displayName } = req.body;
 
   if (!username || !email || !displayName || !password) {
@@ -30,11 +30,14 @@ const register = async (req: Request, res: Response) => {
       },
     });
     
-    res.json(newUser);
+    res.status(200).json(newUser);
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: 'User registration failed' })
   }
 }
 
-export default register;
+const login =async (req: Request, res: Response) => {
+
+  res.status(200).json("test");
+}

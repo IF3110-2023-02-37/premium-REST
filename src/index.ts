@@ -1,26 +1,24 @@
 import express, { Application, Request, Response } from 'express';
-import register  from './handler/auth';
-import prisma from './prismaClient'
+import prisma from './src/prismaClient';
+import router from './src/routers/router';
 
 const app: Application = express();
+const cors = require('cors')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS is a browser security feature that restricts cross-origin HTTP requests with other servers and specifies which domains access your resources.
+app.use(cors({
+  origin: '*',
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}));
 const port: number = 3000;
 
 // Route the request
-const route = require('./routers/router')
-app.use('/', route)
-
+app.use('/', router)
 
 // launch the service on port 3000
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 })
-
-// app.get("/", (_req, res: Response) => {
-//   res.send(`Server is running on port: ${port}`);
-// });
-
-// app.post('/register', register)
