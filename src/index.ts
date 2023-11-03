@@ -1,6 +1,6 @@
 import express, { Application, Request, Response } from 'express';
-import prisma from './src/prismaClient';
-import router from './src/routers/router';
+import prisma from './prismaClient';
+import router from './routers/router';
 
 const app: Application = express();
 const cors = require('cors')

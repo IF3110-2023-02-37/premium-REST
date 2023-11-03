@@ -1,10 +1,18 @@
 import { Request, Response } from 'express';
-import { register } from '../controllers/userController'; // Import the register function
+import { register, login } from '../controllers/userControl'; // Import the register function
+import prisma from '../prismaClient';
 
 const express = require('express');
 const router = express.Router();
 
-// routing test to review
 router.post('/register', register);
+
+router.post('/login', login);
+
+// for testing
+router.get('/getAllUser',async (req: Request, res: Response) => {
+  const users = await prisma.user.findMany();
+  return res.json(users);
+})
 
 module.exports = router;
