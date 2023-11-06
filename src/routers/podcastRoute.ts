@@ -1,11 +1,18 @@
-const express = require('express')
-const router = express.Router()
-const podcastControl = require('../controllers/podcastControl')
 import { Request, Response } from 'express';
+import {createPodcast, deletePodcast, getAllPodcast, readPodcast, updatePodcast} from '../controllers/podcastControl'
+import accessValidation from '../accessValidation';
+
+const express = require('express');
+const router = express.Router();
+
+// harus pake token user requestnya
+const userAccess = accessValidation(["user"]);
 
 // routing test to podcast
-router.get('/', async ( req:Request, res:Response) => {
-    await podcastControl.tes(req,res);
-})
+router.post('/create', userAccess, createPodcast);
+router.get('/read/:podcaster', userAccess, readPodcast);
+router.get('/getAll', userAccess, getAllPodcast);
+router.put('/update/:id', userAccess, updatePodcast);
+router.delete('/delete/:id', userAccess, deletePodcast);
 
-module.exports = router
+module.exports = router;

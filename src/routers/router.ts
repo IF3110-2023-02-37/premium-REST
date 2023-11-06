@@ -5,8 +5,8 @@ const router = express.Router()
 // const adminRoute = require('./adminRoute')
 
 //routing to podcast service
-// const podcastRoute = require('./podcastRoute')
-// router.use('/podcast', podcastRoute)
+const podcastRoute = require('./podcastRoute')
+router.use('/podcast', podcastRoute)
 
 //routing to review
 // const reviewRoute = require('./reviewRoute')
