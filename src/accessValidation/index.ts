@@ -3,40 +3,48 @@ import jwt from "jsonwebtoken";
 
 // define interface Request
 interface ValidationRequest extends Request {
-  userData: UserData;
+  payload: Payload;
 }
 
-interface UserData {
-  username: string;
-  password: string;
+interface Payload {
+  username: string,
+  email: string,
+  role: string
 }
 
 // middleware buat validate JWT token
-const accessValidation = (req: Request, res: Response, next: NextFunction) => {
-  const valReq = req as ValidationRequest;
-  
-  // check header from the request.
-  const { authorization } = valReq.headers;
-  if (!authorization) {
-    return res.status(401).json({ message: "Token needed" });
-  }
-
-  const token = authorization.split(' ')[1];
-  const secret = process.env.JWT_SECRET;
-
-  try {
-    // verify token
-    const jwtDecode = jwt.verify(token, secret);
-
-    if (typeof jwtDecode !== 'string') {
-      valReq.userData = jwtDecode as UserData;
+const accessValidation = (allowedRoles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const valReq = req as ValidationRequest;
+    
+    // check header from the request.
+    const { authorization } = valReq.headers;
+    if (!authorization) {
+      return res.status(401).json({ message: "Token needed" });
     }
-  } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
 
-  // If the token is valid, proceed
-  next();
+    const token = authorization.split(' ')[1];
+    const secret = process.env.JWT_SECRET;
+
+    try {
+      // verify token
+      const jwtDecode = jwt.verify(token, secret);
+
+      if (typeof jwtDecode !== 'string') {
+        const payload = jwtDecode as Payload;
+        if (allowedRoles.includes(payload.role)) {
+          // Role is allowed, assign the payload to the request for future use
+          console.log(payload.role)
+          next();
+        } else {
+          // Role is not allowed
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+    } catch (error) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+  }
 };
 
 export default accessValidation;
