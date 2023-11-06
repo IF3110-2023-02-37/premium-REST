@@ -55,7 +55,11 @@ const login =async (req: Request, res: Response) => {
 
   if (isPasswordValid) {
     // payload -> data yang akan diberikan kepada user
-    const payload = {user}
+    const payload = {
+      username: user.username,
+      email: user.email,
+      role: user.role
+    }
 
     const secret = process.env.JWT_SECRET;
     const hour = 1;
