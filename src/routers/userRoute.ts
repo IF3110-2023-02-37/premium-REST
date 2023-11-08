@@ -11,7 +11,7 @@ router.post('/register', register);
 router.post('/login', login);
 
 // for testing
-router.get('/getAllUser', accessValidation, async (req: Request, res: Response) => {
+router.get('/getAllUser', async (req: Request, res: Response) => {
   const users = await prisma.user.findMany();
   return res.json(users);
 })

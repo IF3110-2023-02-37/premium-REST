@@ -11,8 +11,10 @@ const userAccess = accessValidation(["user"]);
 // routing test to podcast
 router.post('/create', userAccess, createPodcast);
 router.get('/read/:podcaster', userAccess, readPodcast);
-router.get('/getAll', userAccess, getAllPodcast);
 router.put('/update/:id', userAccess, updatePodcast);
 router.delete('/delete/:id', userAccess, deletePodcast);
+
+// for testing
+router.get('/getAll',  getAllPodcast);
 
 module.exports = router;
