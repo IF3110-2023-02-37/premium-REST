@@ -23,5 +23,10 @@ router.use('/user', userRoute)
 // const subsRoute = require('./subsRoute')
 // router.use('/subs', subsRoute)
 
+const path = require('path');
+router.use('/audio',  express.static(path.join(__dirname, '../public/audio')));
+router.use('/cover',  express.static(path.join(__dirname, '../public/image/cover')));
+router.use('/profile',  express.static(path.join(__dirname, '../public/image/profile')));
+
 
 export default router
