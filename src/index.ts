@@ -18,6 +18,11 @@ const port: number = 3000;
 // Route the request
 app.use('/', router)
 
+// default route
+app.use((req, res) => {
+  res.status(404).send('404 - Not Found');
+}); 
+
 // launch the service on port 3000
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
