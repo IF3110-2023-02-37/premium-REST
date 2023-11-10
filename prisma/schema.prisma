@@ -24,23 +24,23 @@ model User {
 
 model Podcast {
   id            Int       @id @default(autoincrement())
-  user          User      @relation(fields: [podcaster], references: [username])
+  user          User      @relation(fields: [podcaster], references: [username], onDelete: Cascade)
   podcaster     String    
   title         String
   audio         String
   picture       String
   date          DateTime  @default(now())
-  review        Review[]
+  review        Review[]  
 }
 
 model Review {
   id            Int       @id @default(autoincrement())
   user          User      @relation(fields: [podcaster], references: [username])
-  podcast       Podcast   @relation(fields: [idPodcast], references: [id])
+  podcast       Podcast   @relation(fields: [idPodcast], references: [id], onDelete: Cascade)
   podcaster     String    
   idPodcast     Int
   reviewer      String
   review        String
   date          DateTime  @default(now())
-  rating        Int
+  rating        Int       
 }
