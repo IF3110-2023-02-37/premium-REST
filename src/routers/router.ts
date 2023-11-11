@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+import multer from "multer"
 
 //routing to admin (acc/rej subs)
 // const adminRoute = require('./adminRoute')
