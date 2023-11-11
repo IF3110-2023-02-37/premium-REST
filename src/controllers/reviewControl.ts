@@ -50,7 +50,7 @@ const getReview = async (req: Request, res: Response) => {
   try {
 
     const userName = req.params.username;
-    const podcastId =  parseInt(req.params.podcastid);
+    const podcastId =  parseInt(req.params.podcastid, 10);
     
     const reviews = await prisma.review.findMany({ where : { podcaster: userName, idPodcast: podcastId}})
     
