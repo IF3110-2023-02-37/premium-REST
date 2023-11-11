@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import prisma from './prismaClient';
 import router from './routers/router';
 
@@ -17,6 +17,11 @@ const port: number = 3000;
 
 // Route the request
 app.use('/', router)
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send(err.stack);
+}); 
 
 // default route
 app.use((req, res) => {
