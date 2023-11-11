@@ -62,7 +62,7 @@ const login =async (req: Request, res: Response) => {
     }
 
     const secret = process.env.JWT_SECRET;
-    const hour = 1;
+    const hour = 24;
     const expiresIn = 60 * 60 * hour;
 
     const token = jwt.sign(payload, secret, {expiresIn: expiresIn})

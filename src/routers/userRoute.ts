@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { register, login } from '../controllers/userControl'; // Import the register function
 import prisma from '../prismaClient';
 import accessValidation from '../accessValidation';
+// import multer from 'multer';
 
 const express = require('express');
 const router = express.Router();
