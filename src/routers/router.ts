@@ -10,7 +10,8 @@ const podcastRoute = require('./podcastRoute')
 router.use('/podcast', podcastRoute)
 
 //routing to review
-// const reviewRoute = require('./reviewRoute')
+const reviewRoute = require('./reviewRoute')
+router.use('/review', reviewRoute)
 
 //routing to user (crud podcaster)
 const userRoute = require('./userRoute')
