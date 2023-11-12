@@ -29,4 +29,4 @@ RUN npx prisma generate
 EXPOSE 3000
 
 # A command to start the server
-CMD npm run dev-start
+CMD npm run start

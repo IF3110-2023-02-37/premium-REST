@@ -22,14 +22,20 @@ const accessValidation = (allowedRoles: string[]) => {
     if (!authorization) {
       return res.status(401).json({ message: "Token needed" });
     }
-
     const token = authorization.split(' ')[1];
-    const secret = process.env.JWT_SECRET;
 
+    // debug authorization
+    console.log("Authorization");
+    console.log(authorization);
+    console.log("Token");
+    console.log(token);
+    
+    const secret = process.env.JWT_SECRET;
     try {
       // verify token
       const jwtDecode = jwt.verify(token, secret);
-
+      console.log("JWT Decode");
+      console.log(jwtDecode);
       if (typeof jwtDecode !== 'string') {
         const payload = jwtDecode as Payload;
         if (allowedRoles.includes(payload.role)) {
@@ -42,7 +48,8 @@ const accessValidation = (allowedRoles: string[]) => {
         }
       }
     } catch (error) {
-      return res.status(401).json({ message: "Unauthorized" });
+      console.log(error);
+      return res.status(401).json({ message: "Unauthorized"});
     }
   }
 };
