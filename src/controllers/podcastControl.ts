@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from "../prismaClient";
+import { accessValidation, usernameValidation } from '../accessValidation/accessValidation';
 
 const getAllPodcast =async (req:Request, res:Response) => {
   const podcasts = await prisma.podcast.findMany();
@@ -13,79 +14,61 @@ const createPodcast = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Blank field' });
   }
 
-  const podcast = await prisma.podcast.findFirst ({
-    where: {
-      podcaster,
-      title,
-    }
-  });
-
-  if (podcast) {
-    return res.status(400).json({ message: 'Podcast with this title already existed' })
-  }
-  
-  try {
-    const newPodcast = await prisma.podcast.create({
-      data: {
-        podcaster,
-        title,
-        audio,
-        picture,
-      },
+  usernameValidation(podcaster)(req, res, async () => {
+      // This function is called if the user is allowed
+      const podcast = await prisma.podcast.findFirst ({
+        where: {
+          podcaster,
+          title,
+        }
+      });
+      if (podcast) {
+        return res.status(400).json({ message: 'Podcast with this title already existed' })
+      }
+      try {
+        const newPodcast = await prisma.podcast.create({
+          data: {
+            podcaster,
+            title,
+            audio,
+            picture,
+          },
+        });
+        
+        res.status(200).json({ data: newPodcast});
+      } catch (error) {
+        console.error("error "+ error);
+        res.status(400).json({ message: 'Failed to create the podcast' })
+      }
     });
-    
-    res.status(200).json({ data: newPodcast});
+};
+
+const readPodcast = async (req: Request, res: Response) => {
+  const podcaster = req.params.podcaster;
+  if (!podcaster) {
+    return res.status(400).json({ message: 'missing podcaster' });
+  }
+  try {
+    // Use usernameValidation as middleware
+    usernameValidation(podcaster)(req, res, async () => {
+      // This function is called if the user is allowed
+      const podcasts = await prisma.podcast.findMany({
+        where: {
+          podcaster
+        },
+        orderBy: {
+          date: 'desc',
+        },
+      });
+      res.status(200).json({ data: podcasts });
+    });
   } catch (error) {
-    console.error("error "+ error);
-    res.status(400).json({ message: 'Failed to create the podcast' })
+    console.log(error);
+    res.status(400).json({ error: "failed to fetch data" });
   }
 };
 
-const readPodcast =async (req:Request, res:Response) => {
-  const podcaster = req.params.podcaster;
-  if (!podcaster) {
-    return res.status(400).json({ message: 'missing podcaster'})
-  }
-  try {
-    const podcasts = await prisma.podcast.findMany({
-      where: {
-        podcaster
-      },
-      orderBy: {
-        date: 'desc', 
-      },
-    })
 
-    return res.status(200).json({ data: podcasts});
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ error: "failed to fetch data" })
-  }
-}
-
-// const updatePodcast =async (req:Request, res:Response) => {
-//   const {title, audio, picture} = req.body;
-//   if (!title || !audio || !picture) {
-//     return res.status(400).json({ message: 'Blank field' });
-//   }
-//   const id = parseInt(req.params.id);
-//   try {
-//     await prisma.podcast.update({
-//       where: {
-//         id: id
-//       },
-//       data: {
-//         title,
-//         audio,
-//         picture
-//       }
-//     })
-//     res.status(200).json({ message: 'Success '})
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: 'error update' })
-//   }
-// }
 const updatePodcast = async (req: Request, res: Response) => {
   const { title, audio, picture } = req.body;
   if (!title && !audio && !picture) {
@@ -94,6 +77,7 @@ const updatePodcast = async (req: Request, res: Response) => {
 
   const id = parseInt(req.params.id);
 
+  
   try {
     const existingPodcast = await prisma.podcast.findUnique({
       where: {
