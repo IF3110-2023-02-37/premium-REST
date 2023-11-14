@@ -10,8 +10,8 @@ const userAccess = accessValidation(["user"]);
 
 router.post('/register', register);
 router.post('/login', login);
-router.put('/update/:username', userAccess, updateProfile);
-router.delete('/delete/:username', userAccess, deleteAccount);
+router.put('/:username', userAccess, updateProfile);
+router.delete('/:username', userAccess, deleteAccount);
 
 // for testing
 router.get('/getAll', getAll)
