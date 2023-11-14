@@ -15,6 +15,6 @@ router.put('/:id', userAccess, updatePodcast);
 router.delete('/:id', userAccess, deletePodcast);
 
 // for testing
-router.get('/getAll',  getAllPodcast);
+router.get('/',  getAllPodcast);
 
 module.exports = router;

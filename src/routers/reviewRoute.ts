@@ -7,10 +7,10 @@ import {accessValidation} from '../accessValidation/accessValidation';
 
 const userAccess = accessValidation(["user"]);
 
-router.get("/getreview/:username" , userAccess, getReview);
-router.post("/postreview", createReview);
+router.get("/:username" , userAccess, getReview);
+router.post("/", createReview);
 
-router.get("/getAll", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   const reviews = await prisma.review.findMany({include: {
     podcast: {
       select: {
