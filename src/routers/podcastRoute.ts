@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import {createPodcast, deletePodcast, getAllPodcast, readPodcast, updatePodcast} from '../controllers/podcastControl'
-import accessValidation from '../accessValidation';
+import {accessValidation} from '../accessValidation/accessValidation';
 
 const express = require('express');
 const router = express.Router();
@@ -9,12 +9,12 @@ const router = express.Router();
 const userAccess = accessValidation(["user"]);
 
 // routing test to podcast
-router.post('/create', userAccess, createPodcast);
-router.get('/read/:podcaster', userAccess, readPodcast);
-router.put('/update/:id', userAccess, updatePodcast);
-router.delete('/delete/:id', userAccess, deletePodcast);
+router.post('/', userAccess, createPodcast);
+router.get('/:podcaster', userAccess, readPodcast);
+router.put('/:id', userAccess, updatePodcast);
+router.delete('/:id', userAccess, deletePodcast);
 
 // for testing
-router.get('/getAll',  getAllPodcast);
+router.get('/',  getAllPodcast);
 
 module.exports = router;

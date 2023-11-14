@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { usernameValidation } from "../accessValidation/accessValidation";
 import prisma from "../prismaClient";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -84,42 +85,51 @@ const updateProfile = async (req: Request, res: Response) => {
   const username = req.params.username;
 
   try {
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        username: username,
-      },
+    // Use usernameValidation as middleware
+    usernameValidation(username)(req, res, async () => {
+      try {
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            username: username,
+          },
+        });
+    
+        if (!existingUser) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+    
+        const dataToUpdate: Record<string, any> = {};
+    
+        if (displayName !== undefined) {
+          dataToUpdate.displayName = displayName;
+        }
+    
+        if (description !== undefined) {
+          dataToUpdate.description = description;
+        }
+    
+        if (picture !== undefined) {
+          dataToUpdate.picture = picture;
+        }
+    
+        const updatedUser = await prisma.user.update({
+          where: {
+            username: username
+          },
+          data: dataToUpdate,
+        });
+    
+        res.status(200).json({ message: 'Success', data: updatedUser });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error updating profile' });
+      }
     });
-
-    if (!existingUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const dataToUpdate: Record<string, any> = {};
-
-    if (displayName !== undefined) {
-      dataToUpdate.displayName = displayName;
-    }
-
-    if (description !== undefined) {
-      dataToUpdate.description = description;
-    }
-
-    if (picture !== undefined) {
-      dataToUpdate.picture = picture;
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: {
-        username: username
-      },
-      data: dataToUpdate,
-    });
-
-    res.status(200).json({ message: 'Success', data: updatedUser });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error updating profile' });
+    console.log(error);
+    res.status(400).json({ error: "failed to fetch data" });
   }
+  
 };
 
 const deleteAccount =async (req:Request, res:Response) => {
@@ -141,5 +151,10 @@ const deleteAccount =async (req:Request, res:Response) => {
 }
 
 
+const getAll = async(req: Request, res: Response) => {
+  const users = await prisma.user.findMany();
+  return res.json(users);
+}
 
-export {register, login, updateProfile, deleteAccount};
+
+export {register, login, updateProfile, deleteAccount, getAll};

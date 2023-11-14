@@ -50,11 +50,22 @@ const getReview = async (req: Request, res: Response) => {
   try {
 
     const userName = req.params.username;
-    const podcastId =  parseInt(req.params.podcastid, 10);
     
-    const reviews = await prisma.review.findMany({ where : { podcaster: userName, idPodcast: podcastId}})
-    
-    res.status(200).send(reviews);
+    const reviews = await prisma.review.findMany({ 
+      where : { podcaster: userName},
+      include: {
+        podcast: {
+          select: {
+            id: true,
+            title: true
+            // other fields you want from the Podcast table
+          },
+        },
+      },
+    })
+
+    console.log(reviews)
+    res.status(200).send({data: reviews});
   } catch (e) {
     switch(e.message){
       case "400":
