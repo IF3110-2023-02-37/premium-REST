@@ -1,11 +1,25 @@
 const express = require('express')
 const router = express.Router()
-const subsControl = require('../controllers/subsControl')
+import { getSubs, getPendingSubs, acceptSubs, rejectSubs } from '../controllers/subsControl';
 import { Request, Response } from 'express';
+import accessValidation from '../accessValidation';
 
-// routing test to subs
-router.get('/', async ( req:Request, res:Response) => {
-    await subsControl.tes(req,res);
-})
+const userAccess = accessValidation(["user"]);
 
-module.exports = router
+router.get('/:podcaster', userAccess, (req: Request, res: Response) => {
+    getSubs(req, res);
+});
+
+router.get('/pendingsubs/:podcaster', userAccess, (req: Request, res: Response) => {
+    getPendingSubs(req, res);
+});
+
+router.put('/accsubs/:podcaster/:username', userAccess, (req: Request, res: Response) => {
+    acceptSubs(req, res);
+});
+
+router.put('/rejsubs/:podcaster/:username', userAccess, (req: Request, res: Response) => {
+    rejectSubs(req, res);
+});
+
+module.exports = router;

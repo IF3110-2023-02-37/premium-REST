@@ -21,9 +21,9 @@ router.use('/user', userRoute)
 // const adminRoute = require('./adminRoute')
 // router.use('/admin', adminRoute)
 
-//routing to subscription
-// const subsRoute = require('./subsRoute')
-// router.use('/subs', subsRoute)
+// routing to subscription
+const subsRoute = require('./subsRoute')
+router.use('/subs', subsRoute)
 
 const path = require('path');
 router.use('/audio',  express.static(path.join(__dirname, '../public/audio')));
