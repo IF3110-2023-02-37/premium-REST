@@ -5,8 +5,6 @@
     "baseUrl": "src",
     "outDir": "dist",
     "sourceMap": true,
-    "typeRoots": ["node_modules/@types"],
-    "types": ["faker"],
     "noImplicitAny": true
   },
   "include": ["src/**/*", "prisma/**/*"],
