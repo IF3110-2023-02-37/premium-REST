@@ -1,3 +1,5 @@
+import multer from "multer"
+
 const express = require('express')
 const router = express.Router()
 // import multer from "multer"
@@ -24,6 +26,9 @@ router.use('/user', userRoute)
 // routing to subscription
 const subsRoute = require('./subsRoute')
 router.use('/subs', subsRoute)
+
+const uploadRoute = require('./uploadRoute')
+router.use('/upload', uploadRoute)
 
 const path = require('path');
 router.use('/audio',  express.static(path.join(__dirname, '../public/audio')));

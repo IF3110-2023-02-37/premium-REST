@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 import { getSubs, getPendingSubs, acceptSubs, rejectSubs } from '../controllers/subsControl';
 import { Request, Response } from 'express';
-import accessValidation from '../accessValidation';
+import { accessValidation } from '../accessValidation/accessValidation';
 
 const userAccess = accessValidation(["user"]);
 
