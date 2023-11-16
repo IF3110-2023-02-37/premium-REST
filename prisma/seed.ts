@@ -30,9 +30,9 @@ async function seed() {
     // Seed users
     const user1 = await prisma.user.create({
       data: {
-        username: 'febryan',
+        username: 'test1234',
         email: 'user1@example.com',
-        password: 'febryan',
+        password: '$2b$10$zHNX5vLLZC2iRuJPQNAs3ezU8.TMVflft1iZQL.37lDYLpg7z3YwK',
         displayName: 'Febryan Arota',
       },
     });
@@ -41,7 +41,7 @@ async function seed() {
       data: {
         username: 'admin',
         email: 'admin@gmail.com',
-        password: 'admin',
+        password: '$2b$10$DVZOreUZ9TXiZkB5hJqzJOogfLDO9UVwTyx9t1dKXvqYMMNSmQMdO',
         displayName: 'admin',
         role: 'admin'
       },
