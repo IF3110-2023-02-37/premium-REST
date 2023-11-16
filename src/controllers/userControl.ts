@@ -42,30 +42,43 @@ const register = async (req: Request, res: Response) => {
 const login =async (req: Request, res: Response) => {
   const {username, password} = req.body;
 
-  const user = await prisma.user.findUnique({
+  const checkUser = await prisma.user.findUnique({
     where: {
       username: username
     }
   })
 
-  if (!user) {
+  if (!checkUser) {
     return res.status(404).json({ message: "User not found" })
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
+  const isPasswordValid = await bcrypt.compare(password, checkUser.password);
 
   if (isPasswordValid) {
-    // payload -> data yang akan diberikan kepada user
+    // payload -> data yang akan diberikan kepada checkUser
     const payload = {
-      username: user.username,
-      email: user.email,
-      role: user.role
+      username: checkUser.username,
+      email: checkUser.email,
+      role: checkUser.role
     }
 
     const secret = process.env.JWT_SECRET;
     const hour = 24;
     const expiresIn = 60 * 60 * hour;
 
+    const user = await prisma.user.findUnique({
+      where: {
+        username: username
+      }, 
+      select: {
+        username: true,
+        email: true,
+        displayName: true,
+        picture: true,
+        description: true,
+        role: true
+      }
+    })
     const token = jwt.sign(payload, secret, {expiresIn: expiresIn})
     return res.json({
       user,
@@ -150,11 +163,57 @@ const deleteAccount =async (req:Request, res:Response) => {
   }
 }
 
+const getPodcaster =async (req:Request, res: Response) => {
+  const podcaster = await prisma.user.findMany({
+    where: {
+      role: "user"
+    }, 
+    select: {
+      username: true,
+      displayName: true,
+      picture: true,
+    }
+  })
+  return res.json(podcaster);
+}
 
 const getAll = async(req: Request, res: Response) => {
   const users = await prisma.user.findMany();
   return res.json(users);
 }
 
+const getDataPodcaster = async (req:Request, res: Response) => {
+  const username = req.params.username;
+  try {
+    const podcaster = await prisma.user.findFirst({
+      where: {
+        username: username
+      },
+      select: {
+        username: true,
+        displayName: true,
+        picture: true,
+        description: true,
+      }
+    })
 
-export {register, login, updateProfile, deleteAccount, getAll};
+    const podcasts = await prisma.podcast.findMany({
+      where: {
+        podcaster: username
+      },
+      orderBy: {
+        date: 'desc',
+      },
+    });
+
+    return res.status(200).json({
+      podcaster: podcaster,
+      podcasts: podcasts
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({ message: "error fetching getDataPodcaster"})
+  }
+}
+
+export {register, login, updateProfile, deleteAccount, getAll, getPodcaster, getDataPodcaster};
