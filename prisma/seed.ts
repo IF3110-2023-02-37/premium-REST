@@ -1,49 +1,120 @@
-import { PrismaClient } from '@prisma/client';
-
-import faker from "faker";
+const { PrismaClient } = require('@prisma/client');
+// import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-const role = ["admin", "user"];
-
-async function seed() {
+async function deleteAllData() {
   try {
-    // Seed Users
-    const users = await prisma.user.createMany({
-      data: Array.from({ length: 5 }, () => ({
-        username: faker.internet.userName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        displayName: faker.name.findName(),
-        description: faker.lorem.sentence(),
-      })),
-    });
+    // Delete all reviews
+    await prisma.review.deleteMany({});
 
-    // Seed Podcasts
-    const podcasts = await prisma.podcast.createMany({
-      data: Array.from({ length: 10 }, () => ({
-        podcaster: faker.random.arrayElement(users).username,
-        title: faker.lorem.words(3),
-        audio: 'none',
-        picture: 'none',
-      })),
-    });
+    // Delete all podcasts
+    await prisma.podcast.deleteMany({});
 
-    // Seed Reviews
-    await prisma.review.createMany({
-      data: Array.from({ length: 20 }, () => ({
-        podcaster: faker.random.arrayElement(users).username,
-        idPodcast: faker.random.arrayElement(podcasts).id,
-        reviewer: faker.internet.userName(),
-        review: faker.lorem.paragraph(),
-        rating: faker.random.number({ min: 1, max: 5 }),
-      })),
-    });
+    // Delete all users
+    await prisma.user.deleteMany();
 
-    console.log('Seeding successful');
+    console.log('Deleted all existing data successfully');
+
   } catch (error) {
-    console.error('Error seeding database:', error);
+    console.error('Error deleting data:', error);
+
+  } finally {
+    await prisma.$disconnect(); // Disconnect from the database
   }
 }
 
+async function seed() {
+  await deleteAllData();
+  try {
+    // Seed users
+    const user1 = await prisma.user.create({
+      data: {
+        username: 'febryan',
+        email: 'user1@example.com',
+        password: 'febryan',
+        displayName: 'Febryan Arota',
+      },
+    });
+
+    const user2 = await prisma.user.create({
+      data: {
+        username: 'admin',
+        email: 'admin@gmail.com',
+        password: 'admin',
+        displayName: 'admin',
+        role: 'admin'
+      },
+    });
+
+
+    // make datausers for 5 user with faker
+    // const datausers = Array.from({ length: 5 }, () => ({
+    //   username: faker.internet.userName(),
+    //   email: faker.internet.email(),
+    //   password: faker.internet.password(),
+    //   displayName: faker.person.fullName(),
+    // }));
+
+    // const users = await prisma.user.createMany({
+    //   data: datausers
+    // })
+
+
+    // Seed podcasts
+    const podcast1 = await prisma.podcast.create({
+      data: {
+        // user: { connect: { username: user1.username } },
+        podcaster: 'febryan',
+        title: 'Podcast 1',
+        audio: 'dummy.mp3',
+        picture: 'dummyProfile.jpg',
+      },
+    });
+    
+
+    const podcast2 = await prisma.podcast.create({
+      data: {
+        // user: { connect: { username: user2.username } },
+        podcaster: 'febryan',
+        title: 'Podcast 2',
+        audio: 'dummy.mp3',
+        picture: 'dummyProfile.jpg',
+      },
+    });
+
+  //   podcaster     String    
+  // idPodcast     Int
+  // reviewer      String
+  // review        String
+    await prisma.review.createMany({
+      data: [
+        {
+          podcaster: user1.username, // Use podcaster instead of user
+          idPodcast: podcast1.id,
+          reviewer: 'Reviewer1',
+          review: 'Great podcast!',
+          rating: 5,
+        },
+        {
+          podcaster: user1.username, // Use podcaster instead of user
+          idPodcast: podcast2.id,
+          reviewer: 'Reviewer2',
+          review: 'Awesome content!',
+          rating: 4,
+        },
+      ],
+    });
+
+    console.log('Seeding completed successfully');
+
+  } catch (error) {
+    console.error('Error seeding data:', error);
+
+  } finally {
+    await prisma.$disconnect(); // Disconnect from the database
+  }
+}
+
+// Call the seed function to populate the database
 seed();
