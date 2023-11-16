@@ -1,25 +1,21 @@
 const express = require('express')
 const router = express.Router()
-import prisma from '../prismaClient';
 import { createReview, getReview } from '../controllers/reviewControl';
 import { Request, Response } from 'express';
-import {accessValidation} from '../accessValidation/accessValidation';
+import accessValidation from '../accessValidation';
 
 const userAccess = accessValidation(["user"]);
 
-router.get("/:username" , userAccess, getReview);
-router.post("/", createReview);
+// Example routes with role-based access control
+// router.get("/admin-only", adminAccess, (req: Request, res: Response) => {
+//   res.send("This route is for admin only.");
+// });
 
-router.get("/", async (req: Request, res: Response) => {
-  const reviews = await prisma.review.findMany({include: {
-    podcast: {
-      select: {
-        id: true,
-        title: true
-      },
-    },
-  },});
-  return res.json(reviews);
-})
+// router.get("/user-only", userAccess, (req: Request, res: Response) => {
+//   res.send("This route is for regular users.");
+// });
+
+router.get("/getreview/:username/:podcastid", userAccess, getReview);
+router.post("/postreview", createReview);
 
 module.exports = router;
