@@ -18,11 +18,10 @@ Berikut merupakan daftar requirements untuk aplikasi:
 
 ### Cara Instalasi
 1. Lakukan instalasi requirements tersedia
-2. Clone repository
-3. Lakukan clone pada repository ini
-4. Jalankan aplikasi docker
-5. `docker-compose up --build` pada terminal
-6. `npx prisma migrate dev` pada terminal container prisma-postgres-api pada docker
+2. Lakukan clone pada repository ini
+3. Jalankan aplikasi docker
+4. `docker-compose up --build` pada terminal
+5. `npx prisma migrate dev` pada terminal container prisma-postgres-api pada docker
 6. Lanjutkan dengan `npx prisma generate`
 7. `npx prisma db seed` untuk membuat data awal
 
