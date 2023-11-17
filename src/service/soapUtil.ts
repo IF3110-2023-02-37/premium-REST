@@ -1,5 +1,6 @@
 import { createClientAsync } from "soap";
 import axios, { AxiosResponse } from 'axios';
+import * as parser from 'xml2js';
 
 
 
@@ -43,6 +44,29 @@ const getSubsClient = async (podcaster : String) => {
   } catch (error) {
     console.log(error);
   
+  }
+}
+
+const getAllPendingSubsClient = async () => {
+  try {
+    let envelope = `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:end="http://endpoint/">
+    <soapenv:Header>
+    <soapenv:Authorization>${process.env.SOAP_APIKEY}</soapenv:Authorization>
+    </soapenv:Header>
+   <soapenv:Body>
+   	<end:getAllPendingSubs/>
+   </soapenv:Body>
+  </soapenv:Envelope>`;
+  
+    const response = await axios.post(process.env.SOAP_URL, envelope, {
+      headers: { 'Content-Type': 'text/xml' },
+    });
+    console.log("SOAP Response Data:");
+    console.log(response.data);
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -126,6 +150,8 @@ const rejectSubsClient = async (podcaster : String, subscriber : String) => {
 }
 
 
+
+
 const printFormattedSOAPMessage = (soapMessage : any) => {
   // Convert the SOAP message to a string
   const soapMessageString = soapMessage.toString();
@@ -135,4 +161,11 @@ const printFormattedSOAPMessage = (soapMessage : any) => {
   console.log(soapMessageString);
 };
 
-export { getSubsClient, getPendingSubsClient, acceptSubsClient, rejectSubsClient }
+const parseXML = (xml : any, endpoint :String) => {
+  const endItem = 'ns2:' + endpoint + 'Response';
+  const jsonData = xml['S:Envelope']['S:Body'][0][endItem][0]['return']
+
+  return JSON.stringify(jsonData, null, 2);
+}
+
+export { getSubsClient, getPendingSubsClient, acceptSubsClient, rejectSubsClient, getAllPendingSubsClient,parseXML }
