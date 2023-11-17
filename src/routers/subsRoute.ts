@@ -6,19 +6,19 @@ import { accessValidation } from '../accessValidation/accessValidation';
 
 const userAccess = accessValidation(["user"]);
 
-router.get('/:podcaster', userAccess, (req: Request, res: Response) => {
+router.post('/:podcaster', userAccess, (req: Request, res: Response) => {
     getSubs(req, res);
 });
 
-router.get('/pendingsubs/:podcaster', userAccess, (req: Request, res: Response) => {
+router.post('/pendingsubs/:podcaster', userAccess, (req: Request, res: Response) => {
     getPendingSubs(req, res);
 });
 
-router.put('/accsubs/:podcaster/:username', userAccess, (req: Request, res: Response) => {
+router.post('/accsubs/:podcaster/:username', userAccess, (req: Request, res: Response) => {
     acceptSubs(req, res);
 });
 
-router.put('/rejsubs/:podcaster/:username', userAccess, (req: Request, res: Response) => {
+router.post('/rejsubs/:podcaster/:username', userAccess, (req: Request, res: Response) => {
     rejectSubs(req, res);
 });
 
